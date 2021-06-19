@@ -18,15 +18,22 @@ app.use(express.json());
 
 const getResources = () => JSON.parse(fs.readFileSync(pathToFile));
 
-app.use("/api/item", (req, res) => {
+// get all items
+app.use("/api/posts", (req, res) => {
+  const resources = getResources();
+
+  return res.send(resources);
+});
+
+app.use("/api/post", (req, res) => {
   const resources = getResources();
 
   // adds new post
   if (req.method === "POST") {
     const newResource = {
       ...req.body,
-      date: Date.now().toString(),
       id: uuid.v4(),
+      date: new Date().toISOString(),
     };
     resources.unshift(newResource);
 
