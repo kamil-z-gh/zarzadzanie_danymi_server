@@ -33,6 +33,26 @@ app.get("/api/post/:id", (req, res) => {
   res.send(resource);
 });
 
+// edit signle post details
+app.put("/api/post/:id", (req, res) => {
+  const resources = getResources();
+  const { id } = req.params;
+  const editPostId = resources.findIndex((resource) => resource.id === id);
+  const originalPost = resources[editPostId];
+  resources[editPostId] = {
+    ...originalPost,
+    ...req.body,
+  };
+
+  fs.writeFile(pathToFile, JSON.stringify(resources, null, 2), (error) => {
+    if (error) {
+      return res.status(422).send("Cannot store data in the file!");
+    }
+
+    return res.send("Data has been saved!");
+  });
+});
+
 // delete signle post
 app.delete("/api/post/:id", (req, res) => {
   const resources = getResources();
