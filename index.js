@@ -25,6 +25,29 @@ app.use("/api/posts", (req, res) => {
   return res.send(resources);
 });
 
+// get signle post details
+app.get("/api/post/:id", (req, res) => {
+  const resources = getResources();
+  const { id } = req.params;
+  const resource = resources.find((resource) => resource.id === id);
+  res.send(resource);
+});
+
+// delete signle post
+app.delete("/api/post/:id", (req, res) => {
+  const resources = getResources();
+  const { id } = req.params;
+  const newResources = resources.filter((resource) => resource.id !== id);
+
+  fs.writeFile(pathToFile, JSON.stringify(newResources, null, 2), (error) => {
+    if (error) {
+      return res.status(422).send("Cannot delete post!");
+    }
+
+    return res.send("Post has been deleted!");
+  });
+});
+
 app.use("/api/post", (req, res) => {
   const resources = getResources();
 
@@ -45,6 +68,13 @@ app.use("/api/post", (req, res) => {
       return res.send("Data has been saved!");
     });
   }
+});
+
+// welcome endpoint with message
+app.use("", (req, res) => {
+  return res.send(
+    "Hello, this is my server! Nice to meet you! every endpoint starts with /api/..."
+  );
 });
 
 app.listen(PORT, () => {
